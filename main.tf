@@ -74,7 +74,7 @@ resource "aws_security_group" "k8s_control_plane_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${cidrhost(var.my_public_ip, 0)}/32"]
+    cidr_blocks = ["${var.my_public_ip}/32"]
   }
   # Kubernetes Control Plane Ports (from worker nodes and kubectl)
   ingress {
@@ -145,13 +145,13 @@ resource "aws_key_pair" "k8s_key_pair" {
 # EC2 Instances
 
 resource "aws_instance" "control_plane" {
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t3.medium"
-  subnet_id              = aws_subnet.k8s_subnet_public.id
-  vpc_security_group_ids = [aws_security_group.k8s_control_plane_sg.id]
-  key_name               = aws_key_pair.k8s_key_pair.key_name
+  ami                     = data.aws_ami.ubuntu.id
+  instance_type           = "t3.medium"
+  subnet_id               = aws_subnet.k8s_subnet_public.id
+  vpc_security_group_ids  = [aws_security_group.k8s_control_plane_sg.id]
+  key_name                = aws_key_pair.k8s_key_pair.key_name
   associate_public_ip_address = true
-  user_data             = file("control-plane-bootstrap.sh")
+  user_data               = file("control-plane-bootstrap.sh")
 
   root_block_device {
     volume_type = "gp3"

@@ -14,11 +14,11 @@ variable "aws_availability_zone" {
 
 variable "my_public_ip" {
   description = "Your public IP address for SSH access"
-  type       = string
-  # validation {
-  #   condition     = can(cidrhost(var.my_public_ip, 0))
-  #   error_message = " Must be a valid IP address in CIDR notation."
-  # }
+  type        = string
+  validation {
+    condition     = can(cidrhost("${var.my_public_ip}/32", 0)) 
+    error_message = "Must be a valid IP address (e.g., '192.168.1.1')."
+  }
 }
 variable "ssh_public_key" {
   description = "SSH public key for accessing EC2 instances"
