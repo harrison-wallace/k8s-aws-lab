@@ -168,7 +168,7 @@ resource "aws_instance" "worker" {
   ami                   = data.aws_ami.ubuntu.id
   instance_type         = "t3.medium"
   subnet_id             = aws_subnet.k8s_subnet_public.id
-  vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+  vpc_security_group_ids = [aws_security_group.k8s_worker_sg.id]
   key_name              = aws_key_pair.k8s_key_pair.key_name
   associate_public_ip_address = true
   user_data             = file("worker-node-bootstrap.sh")
