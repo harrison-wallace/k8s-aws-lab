@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'us-east-1'
         TF_IN_AUTOMATION = 'true'
     }
 
@@ -20,7 +19,10 @@ pipeline {
                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
            ]]) {
-               sh 'terraform init -backend-config="bucket=${TF_STATE_BUCKET}" -backend-config="region=${AWS_DEFAULT_REGION}"'
+               sh '''terraform init \
+                  -backend-config="bucket=${TF_STATE_BUCKET}" \
+                  -backend-config="key=${TF_STATE_KEY}" \
+                  -backend-config="region=${AWS_DEFAULT_REGION}"'''
            }
           }
       }
