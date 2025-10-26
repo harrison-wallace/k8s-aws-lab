@@ -92,7 +92,7 @@ resource "aws_security_group" "k8s_control_plane_sg" {
 }
 
   tags = {
-    Name = "k8s_sg"
+    Name = "k8s_control_plane_sg"
   }
 }
 
@@ -151,7 +151,7 @@ resource "aws_instance" "control_plane" {
   vpc_security_group_ids  = [aws_security_group.k8s_control_plane_sg.id]
   key_name                = aws_key_pair.k8s_key_pair.key_name
   associate_public_ip_address = true
-  user_data               = file("control-plane-bootstrap.sh")
+  user_data               = file("bin/control-plane-bootstrap.sh")
 
   root_block_device {
     volume_type = "gp3"
@@ -171,7 +171,7 @@ resource "aws_instance" "worker" {
   vpc_security_group_ids = [aws_security_group.k8s_worker_sg.id]
   key_name              = aws_key_pair.k8s_key_pair.key_name
   associate_public_ip_address = true
-  user_data             = file("worker-node-bootstrap.sh")
+  user_data             = file("bin/worker-node-bootstrap.sh")
 
   root_block_device {
     volume_type = "gp3"
@@ -183,11 +183,4 @@ resource "aws_instance" "worker" {
   }
 }
 
-# Output the public IPs of the instances
-output "control_plane_public_ip" {
-  value = aws_instance.control_plane.public_ip
-}
 
-output "worker_private_ips" {
-  value = [for instance in aws_instance.worker : instance.private_ip]
-}

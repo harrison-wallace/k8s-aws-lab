@@ -5,7 +5,6 @@ The idea is to create 3 ec2 instances 1 controlplane and 2 worker nodes which ge
 
 ssh access to control plane then it has access to the workers
 
-
 ## Required Variables in Jenkins:
 
 ```sh
@@ -20,4 +19,9 @@ TF_STATE_KEY='k8s-aws-lab/'
 - SSH_PUBLIC_KEY (type: Secret Text)
 
 
+## Kubernetes Setup:
 
+- Kubeadm to initialize cluster 
+- Calico network plugin (Supports Network Policies)
+- Join cluster command outputted to `~/join-command.txt` on Control Plane node
+ - SSH to Worker nodes and run command manually after cluster set up

@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        booleanParam(name: 'DESTROY_INFRA', defaultValue: false, description: 'Set to true to destroy the infrastructure after deployment.')
+    }
+
     environment {
         TF_IN_AUTOMATION = 'true'
     }
@@ -29,6 +33,9 @@ pipeline {
         }
 
         stage('Terraform Plan') {
+            when {
+                expression { params.DESTROY_INFRA == false }
+            }
             steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
@@ -48,10 +55,11 @@ pipeline {
 
         stage('Terraform Apply') {
             when {
+                expression { params.DESTROY_INFRA == false }
                 branch 'main'
             }
             steps {
-                timeout(time: 30, unit: 'MINUTES') {  
+                timeout(time: 3, unit: 'MINUTES') {  
                     input message: 'Approve Terraform Apply?', ok: 'Apply'
                 }
                 withCredentials([[
@@ -61,6 +69,29 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY')]) {
                     sh '''terraform apply -auto-approve tfplan \\
+                       -var="my_public_ip=$(curl -s http://checkip.amazonaws.com)" \\
+                       -var="ssh_public_key=\\"${SSH_PUBLIC_KEY}\\"" \\
+                       -var="aws_region=${AWS_DEFAULT_REGION}" \\
+                       -var="aws_availability_zone=${AWS_DEFAULT_AVAILABILITY_ZONE}" \\
+                       -var="state_bucket_name=${TF_STATE_BUCKET}"'''
+                }
+            }
+        }
+        stage('Terraform Destroy') {
+            when {
+                expression { params.DESTROY_INFRA == true }
+            }
+            steps {
+                timeout(time: 3, unit: 'MINUTES') {  
+                    input message: 'Approve Terraform Destroy?', ok: 'Destroy'
+                }
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY')]) {
+                    sh '''terraform destroy -auto-approve \\
                        -var="my_public_ip=$(curl -s http://checkip.amazonaws.com)" \\
                        -var="ssh_public_key=\\"${SSH_PUBLIC_KEY}\\"" \\
                        -var="aws_region=${AWS_DEFAULT_REGION}" \\
