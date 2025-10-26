@@ -59,9 +59,6 @@ pipeline {
                 branch 'main'
             }
             steps {
-                timeout(time: 3, unit: 'MINUTES') {  
-                    input message: 'Approve Terraform Apply?', ok: 'Apply'
-                }
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-credentials',
@@ -82,9 +79,6 @@ pipeline {
                 expression { params.DESTROY_INFRA == true }
             }
             steps {
-                timeout(time: 3, unit: 'MINUTES') {  
-                    input message: 'Approve Terraform Destroy?', ok: 'Destroy'
-                }
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-credentials',
