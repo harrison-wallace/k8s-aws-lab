@@ -65,12 +65,13 @@ pipeline {
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY')]) {
-                    sh '''terraform apply -auto-approve tfplan \\
+                    sh '''terraform apply -auto-approve \\
                        -var="my_public_ip=$(curl -s http://checkip.amazonaws.com)" \\
                        -var="ssh_public_key=\\"${SSH_PUBLIC_KEY}\\"" \\
                        -var="aws_region=${AWS_DEFAULT_REGION}" \\
                        -var="aws_availability_zone=${AWS_DEFAULT_AVAILABILITY_ZONE}" \\
-                       -var="state_bucket_name=${TF_STATE_BUCKET}"'''
+                       -var="state_bucket_name=${TF_STATE_BUCKET}" \\
+                       tfplan.tfout'''
                 }
             }
         }
