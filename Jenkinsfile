@@ -71,7 +71,7 @@ pipeline {
                        -var="aws_region=${AWS_DEFAULT_REGION}" \\
                        -var="aws_availability_zone=${AWS_DEFAULT_AVAILABILITY_ZONE}" \\
                        -var="state_bucket_name=${TF_STATE_BUCKET}" \\
-                       tfplan.tfout'''
+                       tfplan'''
                 }
             }
         }
