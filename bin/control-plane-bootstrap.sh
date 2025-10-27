@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Update packages and install necessary tools
 apt-get update -y
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common git gpg containerd
@@ -16,7 +15,7 @@ mkdir -p /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
 
 # Add Kubernetes apt repository
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list
 
 # Update and install Kubernetes components
 apt-get update -y
