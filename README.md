@@ -9,6 +9,7 @@ ssh access to control plane then it has access to the workers
 
 ```sh
 AWS_DEFAULT_REGION='us-east-1'
+AWS_DEFAULT_AVAILABILITY_ZONE='us-east-1a'
 TF_STATE_BUCKET='my-bucket'
 K8_TF_STATE_KEY='k8s-aws-lab/terraform.tfstate'
 ```
