@@ -1,5 +1,8 @@
 #!/bin/bash
 
+exec > /var/log/control-plane-bootstrap.log 2>&1
+set -x
+
 # Update packages and install necessary tools
 apt-get update -y
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common git gpg containerd

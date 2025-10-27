@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec > /var/log/worker-node-bootstrap.log 2>&1
+set -x
 
 # Update packages and install necessary tools
 sudo apt-get update -y
