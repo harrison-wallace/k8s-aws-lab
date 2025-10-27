@@ -25,10 +25,9 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ]]) {
                     sh '''terraform init \\
-                       -backend-config='bucket="${TF_STATE_BUCKET}"' \\
-                       -backend-config='key="${TF_STATE_KEY}"' \\
-                       -backend-config='region="${AWS_DEFAULT_REGION}"'
-                       '''
+                       -backend-config="bucket=${TF_STATE_BUCKET}" \\
+                       -backend-config="key=${TF_STATE_KEY}" \\
+                       -backend-config="region=${AWS_DEFAULT_REGION}"'''
                 }
             }
         }
@@ -44,13 +43,18 @@ pipeline {
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY')]) {
-                    sh '''terraform plan -out=tfplan \\
-                       -var='my_public_ip="$(curl -s http://checkip.amazonaws.com)"' \\
-                       -var='ssh_public_key="${SSH_PUBLIC_KEY}"' \\
-                       -var='aws_region="${AWS_DEFAULT_REGION}"' \\
-                       -var='aws_availability_zone="${AWS_DEFAULT_AVAILABILITY_ZONE}"' \\
-                       -var='state_bucket_name="${TF_STATE_BUCKET}"' \\
-                       '''
+                    sh '''
+                    my_ip=$(curl -s http://checkip.amazonaws.com)
+                    cat <<EOF > terraform.tfvars
+my_public_ip = "${my_ip}"
+ssh_public_key = "${SSH_PUBLIC_KEY}"
+aws_region = "${AWS_DEFAULT_REGION}"
+aws_availability_zone = "${AWS_DEFAULT_AVAILABILITY_ZONE}"
+state_bucket_name = "${TF_STATE_BUCKET}"
+EOF
+                    terraform plan -out=tfplan -var-file=terraform.tfvars
+                    rm terraform.tfvars
+                    '''
                 }
             }
         }
@@ -67,13 +71,17 @@ pipeline {
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY')]) {
-                    sh '''terraform apply -auto-approve \\
-                       -var='my_public_ip="$(curl -s http://checkip.amazonaws.com)"' \\
-                       -var='ssh_public_key="${SSH_PUBLIC_KEY}"' \\
-                       -var='aws_region="${AWS_DEFAULT_REGION}"' \\
-                       -var='aws_availability_zone="${AWS_DEFAULT_AVAILABILITY_ZONE}"' \\
-                       -var='state_bucket_name="${TF_STATE_BUCKET}"' \\
-                       tfplan'''
+                    sh '''
+                    my_ip=$(curl -s http://checkip.amazonaws.com)
+                    cat <<EOF > terraform.tfvars
+my_public_ip = "${my_ip}"
+ssh_public_key = "${SSH_PUBLIC_KEY}"
+aws_region = "${AWS_DEFAULT_REGION}"
+aws_availability_zone = "${AWS_DEFAULT_AVAILABILITY_ZONE}"
+state_bucket_name = "${TF_STATE_BUCKET}"
+EOF
+                    terraform apply -auto-approve -var-file=terraform.tfvars tfplan
+                    rm terraform.tfvars'''
                 }
             }
         }
@@ -88,13 +96,18 @@ pipeline {
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY')]) {
-                    sh '''terraform destroy -auto-approve \\
-                       -var='my_public_ip="$(curl -s http://checkip.amazonaws.com)"' \\
-                       -var='ssh_public_key="${SSH_PUBLIC_KEY}"' \\
-                       -var='aws_region="${AWS_DEFAULT_REGION}"' \\
-                       -var='aws_availability_zone="${AWS_DEFAULT_AVAILABILITY_ZONE}"' \\
-                       -var='state_bucket_name="${TF_STATE_BUCKET}"' 
-                       '''
+                    sh '''
+                    my_ip=$(curl -s http://checkip.amazonaws.com)
+                    cat <<EOF > terraform.tfvars
+my_public_ip = "${my_ip}"
+ssh_public_key = "${SSH_PUBLIC_KEY}"
+aws_region = "${AWS_DEFAULT_REGION}"
+aws_availability_zone = "${AWS_DEFAULT_AVAILABILITY_ZONE}"
+state_bucket_name = "${TF_STATE_BUCKET}"
+EOF
+                    terraform destroy -auto-approve -var-file=terraform.tfvars
+                    rm terraform.tfvars
+                    '''
                 }
             }
         }
