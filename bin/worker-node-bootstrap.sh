@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec > /var/log/worker-node-bootstrap.log 2>&1
+set -x
 
 # Update packages and install necessary tools
 sudo apt-get update -y
@@ -16,7 +18,7 @@ sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
 
 # Add Kubernetes apt repository
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list
 
 # Update and install Kubernetes components
 sudo apt-get update -y
