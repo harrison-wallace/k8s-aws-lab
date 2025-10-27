@@ -11,6 +11,8 @@ provider "aws" {
   }
 }
 
+
+
 # Fetch the latest Ubuntu AMI
 
 data "aws_ami" "ubuntu" {
