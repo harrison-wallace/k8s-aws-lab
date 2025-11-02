@@ -33,7 +33,7 @@ apt-mark hold kubelet kubeadm kubectl
 # Enable and start kubelet service
 systemctl enable --now kubelet
 
-# Initialize the Kubernetes control plane (use Calico's default CIDR to avoid mismatch)
+# Initialize the Kubernetes control plane 
 kubeadm init --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
 
 # Set up kubeconfig for the root user
