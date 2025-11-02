@@ -45,20 +45,22 @@ pipeline {
                 ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY'),
                 string(credentialsId: 'INTERNAL_SSH_PUBLIC_KEY', variable: 'INTERNAL_SSH_PUBLIC_KEY'),
                 string(credentialsId: 'INTERNAL_SSH_PRIVATE_KEY', variable: 'INTERNAL_SSH_PRIVATE_KEY')]) {
-                    sh '''
-                    my_ip=$(curl -s http://checkip.amazonaws.com)
+                    sh """
+                    my_ip=\$(curl -s http://checkip.amazonaws.com)
                     cat <<EOF > terraform.tfvars
-my_public_ip = "${my_ip}"
-ssh_public_key = "${SSH_PUBLIC_KEY}"
-internal_ssh_public_key = "${INTERNAL_SSH_PUBLIC_KEY}"
-internal_ssh_private_key = '''${INTERNAL_SSH_PRIVATE_KEY}'''
-aws_region = "${AWS_DEFAULT_REGION}"
-aws_availability_zone = "${AWS_DEFAULT_AVAILABILITY_ZONE}"
-state_bucket_name = "${TF_STATE_BUCKET}"
+my_public_ip = "\${my_ip}"
+ssh_public_key = "\${SSH_PUBLIC_KEY}"
+internal_ssh_public_key = "\${INTERNAL_SSH_PUBLIC_KEY}"
+internal_ssh_private_key = <<EOT
+\${INTERNAL_SSH_PRIVATE_KEY}
+EOT
+aws_region = "\${AWS_DEFAULT_REGION}"
+aws_availability_zone = "\${AWS_DEFAULT_AVAILABILITY_ZONE}"
+state_bucket_name = "\${TF_STATE_BUCKET}"
 EOF
                     terraform plan -out=tfplan -var-file=terraform.tfvars
                     rm terraform.tfvars
-                    '''
+                    """
                 }
             }
         }
@@ -77,19 +79,22 @@ EOF
                 ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY'),
                 string(credentialsId: 'INTERNAL_SSH_PUBLIC_KEY', variable: 'INTERNAL_SSH_PUBLIC_KEY'),
                 string(credentialsId: 'INTERNAL_SSH_PRIVATE_KEY', variable: 'INTERNAL_SSH_PRIVATE_KEY')]) {
-                    sh '''
-                    my_ip=$(curl -s http://checkip.amazonaws.com)
+                    sh """
+                    my_ip=\$(curl -s http://checkip.amazonaws.com)
                     cat <<EOF > terraform.tfvars
-my_public_ip = "${my_ip}"
-ssh_public_key = "${SSH_PUBLIC_KEY}"
-internal_ssh_public_key = "${INTERNAL_SSH_PUBLIC_KEY}"
-internal_ssh_private_key = '''${INTERNAL_SSH_PRIVATE_KEY}'''
-aws_region = "${AWS_DEFAULT_REGION}"
-aws_availability_zone = "${AWS_DEFAULT_AVAILABILITY_ZONE}"
-state_bucket_name = "${TF_STATE_BUCKET}"
+my_public_ip = "\${my_ip}"
+ssh_public_key = "\${SSH_PUBLIC_KEY}"
+internal_ssh_public_key = "\${INTERNAL_SSH_PUBLIC_KEY}"
+internal_ssh_private_key = <<EOT
+\${INTERNAL_SSH_PRIVATE_KEY}
+EOT
+aws_region = "\${AWS_DEFAULT_REGION}"
+aws_availability_zone = "\${AWS_DEFAULT_AVAILABILITY_ZONE}"
+state_bucket_name = "\${TF_STATE_BUCKET}"
 EOF
                     terraform apply -auto-approve -var-file=terraform.tfvars tfplan
-                    rm terraform.tfvars'''
+                    rm terraform.tfvars
+                    """
                 }
             }
         }
@@ -106,20 +111,22 @@ EOF
                 ], string(credentialsId: 'SSH_PUBLIC_KEY', variable: 'SSH_PUBLIC_KEY'),
                 string(credentialsId: 'INTERNAL_SSH_PUBLIC_KEY', variable: 'INTERNAL_SSH_PUBLIC_KEY'),
                 string(credentialsId: 'INTERNAL_SSH_PRIVATE_KEY', variable: 'INTERNAL_SSH_PRIVATE_KEY')]) {
-                    sh '''
-                    my_ip=$(curl -s http://checkip.amazonaws.com)
+                    sh """
+                    my_ip=\$(curl -s http://checkip.amazonaws.com)
                     cat <<EOF > terraform.tfvars
-my_public_ip = "${my_ip}"
-ssh_public_key = "${SSH_PUBLIC_KEY}"
-internal_ssh_public_key = "${INTERNAL_SSH_PUBLIC_KEY}"
-internal_ssh_private_key = '''${INTERNAL_SSH_PRIVATE_KEY}'''
-aws_region = "${AWS_DEFAULT_REGION}"
-aws_availability_zone = "${AWS_DEFAULT_AVAILABILITY_ZONE}"
-state_bucket_name = "${TF_STATE_BUCKET}"
+my_public_ip = "\${my_ip}"
+ssh_public_key = "\${SSH_PUBLIC_KEY}"
+internal_ssh_public_key = "\${INTERNAL_SSH_PUBLIC_KEY}"
+internal_ssh_private_key = <<EOT
+\${INTERNAL_SSH_PRIVATE_KEY}
+EOT
+aws_region = "\${AWS_DEFAULT_REGION}"
+aws_availability_zone = "\${AWS_DEFAULT_AVAILABILITY_ZONE}"
+state_bucket_name = "\${TF_STATE_BUCKET}"
 EOF
                     terraform destroy -auto-approve -var-file=terraform.tfvars
                     rm terraform.tfvars
-                    '''
+                    """
                 }
             }
         }
