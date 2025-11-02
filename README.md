@@ -12,12 +12,22 @@ AWS_DEFAULT_REGION='us-east-1'
 AWS_DEFAULT_AVAILABILITY_ZONE='us-east-1a'
 TF_STATE_BUCKET='my-bucket'
 K8_TF_STATE_KEY='k8s-aws-lab/terraform.tfstate'
+SSH_PUBLIC_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy... user@host'
+INTERNAL_SSH_PUBLIC_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy... user@host'
+INTERNAL_SSH_PRIVATE_KEY='-----BEGIN OPENSSH PRIVATE KEY-----
+...
+-----END OPENSSH PRIVATE KEY-----'
 ```
 
 ## Required Credentials:
 
 - AWS Credentials (type: AWS Credentials)
-- SSH_PUBLIC_KEY (type: Secret Text)
+- `SSH_PUBLIC_KEY` (type: Secret Text)
+ - Used to create EC2 Key Pair for external SSH access
+- `INTERNAL_SSH_PUBLIC_KEY` (type: Secret Text)
+ - Used to create EC2 Key Pair for internal SSH access between nodes
+- `INTERNAL_SSH_PRIVATE_KEY` (type: Secret Text)
+ - Used to create EC2 Key Pair for internal SSH access between nodes
 
 
 ## Kubernetes Setup:
