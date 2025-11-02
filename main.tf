@@ -156,6 +156,12 @@ resource "aws_instance" "control_plane" {
     volume_size = 30
   }
 
+  lifecycle {
+    replace_triggered_by = [
+      null_resource.control_plane_bootstrap.id
+    ]
+  }
+
   tags = {
     Name = "k8s-control-plane"
   }
@@ -176,9 +182,26 @@ resource "aws_instance" "worker" {
     volume_size = 30
   }
 
+  lifecycle {
+    replace_triggered_by = [
+      null_resource.worker_node_bootstrap.id
+    ]
+  }
+
   tags = {
     Name = "k8s-worker-${count.index + 1}"
   }
 }
 
+# Null Resources to trigger re-execution of user data scripts on changes
+resource "null_resource" "control_plane_bootstrap" {
+  triggers = {
+    script_hash = filemd5("bin/control-plane-bootstrap.sh")
+  }
+}
 
+resource "null_resource" "worker_node_bootstrap" {
+  triggers = {
+    script_hash = filemd5("bin/worker-node-bootstrap.sh")
+  }
+}
