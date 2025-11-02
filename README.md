@@ -28,6 +28,20 @@ K8_TF_STATE_KEY='k8s-aws-lab/terraform.tfstate'
  - SSH to Worker nodes and run command manually after cluster set up
 
 
+## EC2 Management Script:
+
+requires AWS CLI configured with appropriate permissions and region set
+
+`./bin/manage-instances.sh <action>`
+
+Where `<action>` is one of:
+
+- start
+- stop
+- restart
+- status
+
+
 ## Troubleshooting:
 
 The bootstrap scripts log output to these locations:

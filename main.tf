@@ -1,6 +1,7 @@
 provider "aws" {
   region = var.aws_region
 
+# Default Tags
   default_tags {
     tags = {
       Project = "k8s_aws_lab"
@@ -11,10 +12,7 @@ provider "aws" {
   }
 }
 
-
-
 # Fetch the latest Ubuntu AMI
-
 data "aws_ami" "ubuntu" {
   most_recent = true
   owners      = ["099720109477"]
@@ -25,7 +23,6 @@ data "aws_ami" "ubuntu" {
 }
 
 # Networking Resources
-
 resource "aws_vpc" "k8s_vpc" {
   cidr_block = "10.0.0.0/16"
 
@@ -78,6 +75,7 @@ resource "aws_security_group" "k8s_control_plane_sg" {
     protocol    = "tcp"
     cidr_blocks = ["${var.my_public_ip}/32"]
   }
+
   # Kubernetes Control Plane Ports (from worker nodes and kubectl)
   ingress {
     description = "Kubernetes API Server, etcd, kubelet, etc."
@@ -133,7 +131,6 @@ resource "aws_security_group" "k8s_worker_sg" {
 }
 
 # SSH Key Pair
-
 resource "aws_key_pair" "k8s_key_pair" {
   key_name   = "k8s_key_pair"
   public_key = var.ssh_public_key
@@ -145,7 +142,6 @@ resource "aws_key_pair" "k8s_key_pair" {
 }
 
 # EC2 Instances
-
 resource "aws_instance" "control_plane" {
   ami                     = data.aws_ami.ubuntu.id
   instance_type           = "t3.medium"
@@ -161,7 +157,7 @@ resource "aws_instance" "control_plane" {
   }
 
   tags = {
-    Name = "k8s_control_plane"
+    Name = "k8s-control-plane"
   }
 }
 
@@ -181,7 +177,7 @@ resource "aws_instance" "worker" {
   }
 
   tags = {
-    Name = "k8s_worker_${count.index + 1}"
+    Name = "k8s-worker-${count.index + 1}"
   }
 }
 
