@@ -214,7 +214,7 @@ resource "tls_private_key" "internal_ssh_key" {
 data "template_file" "control_plane_bootstrap" {
   template = file("bin/control-plane-bootstrap.sh.tpl")
   vars = {
-    internal_private_key = tls_private_key.internal_ssh_key.private_key_pem
+    internal_ssh_private_key = tls_private_key.internal_ssh_key.private_key_pem
   }
 }
 
