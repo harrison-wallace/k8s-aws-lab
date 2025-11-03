@@ -14,6 +14,9 @@ EOF
 chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
 chmod 600 /home/ubuntu/.ssh/id_rsa
 
+# Set custom hostname
+hostnamectl set-hostname controlplane
+
 # Update packages and install necessary tools
 apt-get update -y
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common git gpg containerd
