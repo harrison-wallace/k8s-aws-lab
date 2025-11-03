@@ -13,6 +13,9 @@ chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 chmod 700 /home/ubuntu/.ssh
 chmod 600 /home/ubuntu/.ssh/authorized_keys
 
+# Set custom hostname (dynamic based on index)
+hostnamectl set-hostname worker${worker_index}
+
 # Update packages and install necessary tools
 sudo apt-get update -y
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg containerd
