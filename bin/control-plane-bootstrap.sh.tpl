@@ -3,9 +3,11 @@
 exec > /var/log/control-plane-bootstrap.log 2>&1
 set -x
 
-# Inject internal SSH private key for connecting to workers
+# Inject internal SSH private key
 mkdir -p /home/ubuntu/.ssh
-echo "${internal_ssh_private_key}" > /home/ubuntu/.ssh/id_ed25519
+cat <<EOF > /home/ubuntu/.ssh/id_ed25519
+${internal_ssh_private_key}
+EOF
 chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519
 chmod 600 /home/ubuntu/.ssh/id_ed25519
 

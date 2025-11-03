@@ -13,10 +13,6 @@ AWS_DEFAULT_AVAILABILITY_ZONE='us-east-1a'
 TF_STATE_BUCKET='my-bucket'
 K8_TF_STATE_KEY='k8s-aws-lab/terraform.tfstate'
 SSH_PUBLIC_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy... user@host'
-INTERNAL_SSH_PUBLIC_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy... user@host'
-INTERNAL_SSH_PRIVATE_KEY='-----BEGIN OPENSSH PRIVATE KEY-----
-...
------END OPENSSH PRIVATE KEY-----'
 ```
 
 ## Required Credentials:
@@ -24,10 +20,6 @@ INTERNAL_SSH_PRIVATE_KEY='-----BEGIN OPENSSH PRIVATE KEY-----
 - AWS Credentials (type: AWS Credentials)
 - `SSH_PUBLIC_KEY` (type: Secret Text)
  - Used to create EC2 Key Pair for external SSH access
-- `INTERNAL_SSH_PUBLIC_KEY` (type: Secret Text)
- - Used to create EC2 Key Pair for internal SSH access between nodes
-- `INTERNAL_SSH_PRIVATE_KEY` (type: Secret Text)
- - Used to create EC2 Key Pair for internal SSH access between nodes
 
 
 ## Kubernetes Setup:
@@ -36,6 +28,9 @@ INTERNAL_SSH_PRIVATE_KEY='-----BEGIN OPENSSH PRIVATE KEY-----
 - Calico network plugin (Supports Network Policies)
 - Join cluster command outputted to `~/join-command.txt` on Control Plane node
  - SSH to Worker nodes and run command manually after cluster set up
+- Internal SSH key pair for communication between Control Plane and Worker nodes
+ - Control Plane injects private key
+ - Worker nodes inject public key 
 
 
 ## EC2 Management Script:
@@ -51,6 +46,7 @@ Where `<action>` is one of:
 - restart
 - status
 
+NOTE: If terminated instance's with same name exists script will fail
 
 ## Troubleshooting:
 
