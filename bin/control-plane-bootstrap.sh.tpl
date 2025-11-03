@@ -5,11 +5,11 @@ set -x
 
 # Inject internal SSH private key
 mkdir -p /home/ubuntu/.ssh
-cat <<EOF > /home/ubuntu/.ssh/id_ed25519
+cat <<EOF > /home/ubuntu/.ssh/id_rsa
 ${internal_ssh_private_key}
 EOF
-chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519
-chmod 600 /home/ubuntu/.ssh/id_ed25519
+chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
+chmod 600 /home/ubuntu/.ssh/id_rsa
 
 # Update packages and install necessary tools
 apt-get update -y
