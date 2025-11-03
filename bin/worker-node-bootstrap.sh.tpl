@@ -3,6 +3,9 @@
 exec > /var/log/worker-node-bootstrap.log 2>&1
 set -x
 
+# Debug: Confirm bootstrap run
+echo "Bootstrap starting at $(date)"
+
 # Inject internal SSH public key
 mkdir -p /home/ubuntu/.ssh
 echo "${internal_ssh_public_key}" >> /home/ubuntu/.ssh/authorized_keys

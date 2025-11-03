@@ -3,6 +3,9 @@
 exec > /var/log/control-plane-bootstrap.log 2>&1
 set -x
 
+# Debug: Confirm bootstrap run
+echo "Bootstrap starting at $(date)"
+
 # Inject internal SSH private key
 mkdir -p /home/ubuntu/.ssh
 cat <<EOF > /home/ubuntu/.ssh/id_rsa
