@@ -3,7 +3,7 @@
 exec > /var/log/worker-node-bootstrap.log 2>&1
 set -x
 
-# Inject internal SSH public key from control plane
+# Inject internal SSH public key
 mkdir -p /home/ubuntu/.ssh
 echo "${internal_ssh_public_key}" >> /home/ubuntu/.ssh/authorized_keys
 chown -R ubuntu:ubuntu /home/ubuntu/.ssh

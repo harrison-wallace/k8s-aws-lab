@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 
@@ -149,7 +162,7 @@ resource "aws_instance" "control_plane" {
   vpc_security_group_ids  = [aws_security_group.k8s_control_plane_sg.id]
   key_name                = aws_key_pair.k8s_key_pair.key_name
   associate_public_ip_address = true
-  user_data               = file("bin/control-plane-bootstrap.sh")
+  user_data               = data.template_file.control_plane_bootstrap.rendered
 
   root_block_device {
     volume_type = "gp3"
@@ -175,7 +188,7 @@ resource "aws_instance" "worker" {
   vpc_security_group_ids = [aws_security_group.k8s_worker_sg.id]
   key_name              = aws_key_pair.k8s_key_pair.key_name
   associate_public_ip_address = true
-  user_data             = file("bin/worker-node-bootstrap.sh")
+  user_data             = data.template_file.worker_node_bootstrap.rendered
 
   root_block_device {
     volume_type = "gp3"
@@ -193,15 +206,34 @@ resource "aws_instance" "worker" {
   }
 }
 
+# Internal Key Pair for Node Communication
+resource "tls_private_key" "internal_ssh_key" {
+  algorithm = "ED25519"
+}
+
+data "template_file" "control_plane_bootstrap" {
+  template = file("bin/control-plane-bootstrap.sh.tpl")
+  vars = {
+    internal_private_key = tls_private_key.internal_ssh_key.private_key_pem
+  }
+}
+
+data "template_file" "worker_node_bootstrap" {
+  template = file("bin/worker-node-bootstrap.sh.tpl")
+  vars = {
+    internal_ssh_public_key = tls_private_key.internal_ssh_key.public_key_openssh
+  }
+}
+
 # Null Resources to trigger re-execution of user data scripts on changes
 resource "null_resource" "control_plane_bootstrap" {
   triggers = {
-    script_hash = filemd5("bin/control-plane-bootstrap.sh")
+    script_hash = filemd5("bin/control-plane-bootstrap.sh.tpl")
   }
 }
 
 resource "null_resource" "worker_node_bootstrap" {
   triggers = {
-    script_hash = filemd5("bin/worker-node-bootstrap.sh")
+    script_hash = filemd5("bin/worker-node-bootstrap.sh.tpl")
   }
 }
