@@ -172,7 +172,7 @@ resource "aws_instance" "control_plane" {
   lifecycle {
     replace_triggered_by = [
       null_resource.control_plane_bootstrap.id,
-      tls_private_key.internal_ssh_key.private_key_openssh.id
+      tls_private_key.internal_ssh_key.id
     ]
   }
 
@@ -199,7 +199,7 @@ resource "aws_instance" "worker" {
   lifecycle {
     replace_triggered_by = [
       null_resource.worker_node_bootstrap.id,
-      tls_private_key.internal_ssh_key.private_key_openssh.id
+      tls_private_key.internal_ssh_key.id
     ]
   }
 
