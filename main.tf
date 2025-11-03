@@ -228,12 +228,12 @@ data "template_file" "worker_node_bootstrap" {
 # Null Resources to trigger re-execution of user data scripts on changes
 resource "null_resource" "control_plane_bootstrap" {
   triggers = {
-    script_hash = filemd5("bin/control-plane-bootstrap.sh")
+    script_hash = filemd5("bin/control-plane-bootstrap.sh.tpl")
   }
 }
 
 resource "null_resource" "worker_node_bootstrap" {
   triggers = {
-    script_hash = filemd5("bin/worker-node-bootstrap.sh")
+    script_hash = filemd5("bin/worker-node-bootstrap.sh.tpl")
   }
 }
