@@ -208,7 +208,8 @@ resource "aws_instance" "worker" {
 
 # Internal Key Pair for Node Communication
 resource "tls_private_key" "internal_ssh_key" {
-  algorithm = "ED25519"
+  algorithm = "RSA"
+  rsa_bits  = 4096  
 }
 
 data "template_file" "control_plane_bootstrap" {
