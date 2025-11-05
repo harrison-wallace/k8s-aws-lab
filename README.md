@@ -21,7 +21,6 @@ SSH_PUBLIC_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy... user@host'
 - `SSH_PUBLIC_KEY` (type: Secret Text)
  - Used to create EC2 Key Pair for external SSH access
 
-
 ## Kubernetes Setup:
 
 - Kubeadm to initialize cluster 
@@ -29,24 +28,17 @@ SSH_PUBLIC_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy... user@host'
 - Join cluster command outputted to `~/join-command.txt` on Control Plane node
  - SSH to Worker nodes and run command manually after cluster set up
 - Internal SSH key pair for communication between Control Plane and Worker nodes
- - Control Plane injects private key
- - Worker nodes inject public key 
+ - Created and stored at runtime via terraform and rendered into `.sh.tpl` bootstrap files
 
+## Architecture:
+
+![k8s-aws-lab](docs/k8s-aws-lab.png)
 
 ## EC2 Management Script:
 
 requires AWS CLI configured with appropriate permissions and region set
 
-`./bin/manage-instances.sh <action>`
-
-Where `<action>` is one of:
-
-- start
-- stop
-- restart
-- status
-
-NOTE: If terminated instance's with same name exists script will fail
+`./bin/manage-instances.sh {start|stop|restart|status}`
 
 ## Troubleshooting:
 
