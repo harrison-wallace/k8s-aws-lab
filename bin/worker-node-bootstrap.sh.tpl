@@ -17,34 +17,34 @@ chmod 600 /home/ubuntu/.ssh/authorized_keys
 hostnamectl set-hostname worker${worker_index}
 
 # Update packages and install necessary tools
-sudo apt-get update -y
-sudo apt-get install -y apt-transport-https ca-certificates curl gpg containerd
+apt-get update -y
+apt-get install -y apt-transport-https ca-certificates curl gpg containerd
 
 # Disable swap (required for Kubernetes)
-sudo swapoff -a
-sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
 # Enable IP forwarding (required for Kubernetes networking)
-sudo sysctl -w net.ipv4.ip_forward=1
-echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
+sysctl -w net.ipv4.ip_forward=1
+echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+sysctl -p
 
 # Create keyrings directory for apt
-sudo mkdir -p /etc/apt/keyrings
+mkdir -p /etc/apt/keyrings
 
 # Add Kubernetes GPG key
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
 
 # Add Kubernetes apt repository
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list
 
 # Update and install Kubernetes components
-sudo apt-get update -y
-sudo apt-get install -y kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl
+apt-get update -y
+apt-get install -y kubelet kubeadm kubectl
+apt-mark hold kubelet kubeadm kubectl
 
 # Enable and start kubelet service
-sudo systemctl enable --now kubelet
+systemctl enable --now kubelet
 
 # Install bash-completion for kubectl and k alias
 apt-get install -y bash-completion
@@ -63,4 +63,4 @@ if ! grep -q "$ALIAS_LINE" "$PROFILE_FILE"; then
     echo "$COMPDEF_LINE" >> "$PROFILE_FILE"
 fi
 
-# Note: The join command is manual - copy /join-command.txt from control plane via SSH, then run: sudo $(cat /join-command.txt) --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
+# Note: The join command is manual - copy /join-command.txt from control plane via SSH, then run
