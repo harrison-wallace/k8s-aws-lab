@@ -46,8 +46,21 @@ sudo apt-mark hold kubelet kubeadm kubectl
 # Enable and start kubelet service
 sudo systemctl enable --now kubelet
 
-# Add kubectl alias for root user
-echo "alias k=kubectl" >> /etc/bash.bashrc
-echo "alias k=kubectl" >> /home/ubuntu/.bashrc
+# Install bash-completion for kubectl and k alias
+apt-get install -y bash-completion
+
+COMPLETION_LINE="source <(kubectl completion bash)"
+PROFILE_FILE="/etc/bash.bashrc"
+
+if ! grep -q "$COMPLETION_LINE" "$PROFILE_FILE"; then
+    echo "$COMPLETION_LINE" >> "$PROFILE_FILE"
+fi
+
+ALIAS_LINE="alias k='kubectl'"
+COMPDEF_LINE="complete -o default -F __start_kubectl k" 
+if ! grep -q "$ALIAS_LINE" "$PROFILE_FILE"; then
+    echo "$ALIAS_LINE" >> "$PROFILE_FILE"
+    echo "$COMPDEF_LINE" >> "$PROFILE_FILE"
+fi
 
 # Note: The join command is manual - copy /join-command.txt from control plane via SSH, then run: sudo $(cat /join-command.txt) --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
