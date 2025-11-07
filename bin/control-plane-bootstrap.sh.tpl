@@ -79,6 +79,17 @@ fi
 
 # Install Calico network plugin (updated to latest compatible version)
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.31.0/manifests/tigera-operator.yaml
+
+# Wait for Tigera operator to install CRDs (poll every 5s, timeout after ~5min)
+for i in {1..60}; do
+    if kubectl get crd installations.operator.tigera.io &> /dev/null; then
+        echo "CRDs installed, proceeding..."
+        break
+    fi
+    echo "Waiting for CRDs ($i/60)..."
+    sleep 5
+done
+
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.31.0/manifests/custom-resources.yaml
 
 # Generate and save the join command for worker nodes
